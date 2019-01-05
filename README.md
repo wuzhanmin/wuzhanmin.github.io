@@ -1,32 +1,30 @@
-# About
+# Hydejack Starter Kit
 
-This is my blog based on jekyll. And I change the style and interactive. If you want to use this model of the blog. **Please give a star at this repository**. Then you can clone it as your blog model.
+A quicker, cleaner way to get started blogging with [Hydejack](https://hydejack.com/).
 
-You can visit [here](http://gaohaoyang.github.io) to see this blog.
+## Quick Start
+### Running locally
+1. Clone repository (git users), or [download] and unzip.
+2. Open terminal, `cd` into root directory (where `_config.yml` is located)
+3. `bundle install` [^1]
+4. `bundle exec jekyll serve`
+5. Open <http://localhost:4000/hy-starter-kit/>
 
----
+### GitHub Pages
+1. Fork this repository.
+2. Go to **Settings**, rename repository to `<your github username>.github.io` (without the `<` `>`)
+3. Edit `_config.yml` (you can do this directly on GitHub)
+    1. Change `url` to `https://<your github username>.github.io` (without the `<` `>`)
+    2. Change `baseurl` to `''` (empty string)
+    3. **Commit changes**.
+4. Go to **Settings** again, look for **GitHub Pages**, set **Source** to **master branch**.
+5. Click **Save** and wait for GitHub to set up your new blag.
 
-这是我的博客，基于 jekyll。我改了所有默认的样式和交互。如果你想使用这个博客模板。**请先在这个仓库上点个star吧**，这也是对我的肯定和鼓励，谢谢了。然后你可以克隆这个仓库用作你自己的博客。
+## What's next?
+* Open files and read the comments
+* Read the [docs](https://hydejack.com/docs/)
+* Buy the [PRO version](https://hydejack.com/download/) to get the project and resume layout, newsletter subscription box, custom forms, and more.
 
-博客访问地址：[点击这里](http://gaohaoyang.github.io)
+[^1]: Requires Bundler. Install with `gem install bundler`.
 
-**使用时请注明模板来源:  Jekyll theme by [Gaohaoyang](https://github.com/Gaohaoyang/gaohaoyang.github.io)**
-
-<!--
-
-## 被引用信息
-
-使用了我的模板并写明来源的人：   
-
-* [dreamholy](http://dreamholy.github.io/)
-
-没有注明来源的人：
-
-* [yangshuailing](http://yangshuailing.github.io/com/)
-* [huapu728](http://huapu728.github.io/)
-* [greatbuger](http://greatbuger.github.io/) 
-
-
--->
-
-
+[download]: https://github.com/qwtel/hy-starter-kit/archive/master.zip
