@@ -13,6 +13,9 @@
     const podcastAudio = document.getElementById('podcastAudio');
     const audioSourceZh = document.getElementById('audioSourceZh');
     const audioSourceEn = document.getElementById('audioSourceEn');
+    const introductionVideo = document.getElementById('introductionVideo');
+    const introVideoSourceZh = document.getElementById('introVideoSourceZh');
+    const introVideoSourceEn = document.getElementById('introVideoSourceEn');
 
     // Function to toggle language
     function toggleLanguage() {
@@ -73,6 +76,27 @@
                 podcastAudio.play().catch(err => console.log('Auto-play prevented:', err));
             }
         }
+
+        // Update introduction video source based on language
+        if (introductionVideo && introVideoSourceZh && introVideoSourceEn) {
+            const currentTime = introductionVideo.currentTime;
+            const wasPlaying = !introductionVideo.paused;
+
+            if (currentLang === 'zh') {
+                introVideoSourceZh.src = 'assets/videos/introduction-zh.mp4';
+                introVideoSourceEn.src = '';
+            } else {
+                introVideoSourceZh.src = '';
+                introVideoSourceEn.src = 'assets/videos/introduction-en.mp4';
+            }
+
+            introductionVideo.load();
+            introductionVideo.currentTime = currentTime;
+
+            if (wasPlaying) {
+                introductionVideo.play().catch(err => console.log('Auto-play prevented:', err));
+            }
+        }
     }
 
     // Attach event listeners to both buttons
@@ -101,6 +125,10 @@
     if (audioSourceZh && audioSourceEn) {
         audioSourceZh.src = 'assets/audio/podcast-zh.m4a';
         audioSourceEn.src = '';
+    }
+    if (introVideoSourceZh && introVideoSourceEn) {
+        introVideoSourceZh.src = 'assets/videos/introduction-zh.mp4';
+        introVideoSourceEn.src = '';
     }
 })();
 
