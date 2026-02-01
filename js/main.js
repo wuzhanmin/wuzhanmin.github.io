@@ -98,6 +98,20 @@
             }
         }
 
+        // Update demoVideo poster attribute
+        if (demoVideo) {
+            demoVideo.poster = currentLang === 'zh'
+                ? 'assets/images/demo-poster-zh.jpg'
+                : 'assets/images/demo-poster-en.jpg';
+        }
+
+        // Update introductionVideo poster attribute
+        if (introductionVideo) {
+            introductionVideo.poster = currentLang === 'zh'
+                ? 'assets/images/introduction-poster-zh.jpg'
+                : 'assets/images/introduction-poster-en.jpg';
+        }
+
         // Update download links based on language
         const downloadCta = document.getElementById('downloadCta');
         const footerDownload = document.getElementById('footerDownload');
@@ -145,6 +159,15 @@
     if (introVideoSourceZh && introVideoSourceEn) {
         introVideoSourceZh.src = 'assets/videos/introduction-zh.mp4';
         introVideoSourceEn.src = '';
+    }
+
+    // Initialize video posters with Chinese version
+    if (demoVideo) {
+        demoVideo.poster = 'assets/images/demo-poster-zh.jpg';
+    }
+
+    if (introductionVideo) {
+        introductionVideo.poster = 'assets/images/introduction-poster-zh.jpg';
     }
 })();
 
