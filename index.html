@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI原生智能任务管理器 - AI-Native Smart Task Manager</title>
+    <meta name="description" content="让 AI 驱动的智能任务管理，为你每月节省 20+ 小时。内置 20 年经验的顶级行政助理，精通 GTD 方法论。">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <style>
+        /* Custom fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap');
+
+        /* Base styles */
+        * {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Scroll animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .animate-delay-100 { animation-delay: 0.1s; }
+        .animate-delay-200 { animation-delay: 0.2s; }
+        .animate-delay-300 { animation-delay: 0.3s; }
+        .animate-delay-400 { animation-delay: 0.4s; }
+        .animate-delay-500 { animation-delay: 0.5s; }
+
+        /* Gradient text */
+        .gradient-text {
+            background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Glass effect */
+        .glass {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #F5F5F7;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #C7C7CC;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8E8E93;
+        }
+
+        /* Audio player styles */
+        .audio-player {
+            background: linear-gradient(135deg, #F5F5F7 0%, #E8E8ED 100%);
+        }
+
+        /* Language visibility */
+        [x-cloak] { display: none !important; }
+
+        .lang-en { display: none; }
+        .lang-zh { display: block; }
+
+        html[lang="en"] .lang-en { display: block; }
+        html[lang="en"] .lang-zh { display: none; }
+
+        html[lang="en"] .lang-inline-en { display: inline; }
+        html[lang="en"] .lang-inline-zh { display: none; }
+        html[lang="zh"] .lang-inline-en { display: none; }
+        html[lang="zh"] .lang-inline-zh { display: inline; }
+    </style>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#007AFF',
+                        secondary: '#5856D6',
+                        dark: '#1D1D1F',
+                        gray: {
+                            50: '#F5F5F7',
+                            100: '#E8E8ED',
+                            200: '#D2D2D7',
+                            300: '#AEAEB2',
+                            400: '#8E8E93',
+                            500: '#636366',
+                            600: '#48484A',
+                            700: '#3A3A3C',
+                            800: '#2C2C2E',
+                            900: '#1C1C1E',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans SC', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="bg-white text-dark" x-data="{ lang: localStorage.getItem('lang') || 'zh', mobileMenu: false, scrolled: false }" x-init="lang === 'en' ? document.documentElement.lang = 'en' : null; window.addEventListener('scroll', () => { scrolled = window.scrollY > 50 });">
+
+    <!-- Navigation -->
+    <nav :class="scrolled ? 'bg-white/90 glass shadow-sm' : 'bg-transparent'" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <a href="#" class="flex-shrink-0">
+                    <span class="text-xl font-bold gradient-text">AI-Native</span>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#features" class="lang-zh text-gray-600 hover:text-primary transition-colors">功能介绍</a>
+                    <a href="#features" class="lang-en text-gray-600 hover:text-primary transition-colors">Features</a>
+
+                    <a href="#use-cases" class="lang-zh text-gray-600 hover:text-primary transition-colors">使用场景</a>
+                    <a href="#use-cases" class="lang-en text-gray-600 hover:text-primary transition-colors">Use Cases</a>
+
+                    <a href="#comparison" class="lang-zh text-gray-600 hover:text-primary transition-colors">产品对比</a>
+                    <a href="#comparison" class="lang-en text-gray-600 hover:text-primary transition-colors">Comparison</a>
+                </div>
+
+                <!-- Right Side -->
+                <div class="flex items-center space-x-4">
+                    <!-- GitHub Icon -->
+                    <a href="#" class="hidden sm:block text-gray-600 hover:text-primary transition-colors">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                    </a>
+
+                    <!-- Language Switcher -->
+                    <button @click="lang = lang === 'zh' ? 'en' : 'zh'; localStorage.setItem('lang', lang); document.documentElement.lang = lang;" class="px-3 py-1 rounded-full text-sm font-medium bg-gray-100 hover:bg-gray-200 transition-colors">
+                        <span class="lang-inline-zh">中/EN</span>
+                        <span class="lang-inline-en">EN/中</span>
+                    </button>
+
+                    <!-- Mobile Menu Button -->
+                    <button @click="mobileMenu = !mobileMenu" class="md:hidden p-2 rounded-lg hover:bg-gray-100">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path x-show="!mobileMenu" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                            <path x-show="mobileMenu" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div x-show="mobileMenu" x-transition class="md:hidden py-4 border-t border-gray-200">
+                <div class="flex flex-col space-y-3">
+                    <a href="#features" @click="mobileMenu = false" class="lang-zh text-gray-600 hover:text-primary transition-colors">功能介绍</a>
+                    <a href="#features" @click="mobileMenu = false" class="lang-en text-gray-600 hover:text-primary transition-colors">Features</a>
+
+                    <a href="#use-cases" @click="mobileMenu = false" class="lang-zh text-gray-600 hover:text-primary transition-colors">使用场景</a>
+                    <a href="#use-cases" @click="mobileMenu = false" class="lang-en text-gray-600 hover:text-primary transition-colors">Use Cases</a>
+
+                    <a href="#comparison" @click="mobileMenu = false" class="lang-zh text-gray-600 hover:text-primary transition-colors">产品对比</a>
+                    <a href="#comparison" @click="mobileMenu = false" class="lang-en text-gray-600 hover:text-primary transition-colors">Comparison</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-32 pb-16 md:pt-40 md:pb-24 px-4">
+        <div class="max-w-5xl mx-auto text-center">
+            <h1 class="lang-zh text-5xl md:text-7xl font-bold text-dark mb-6 animate-fade-in-up">
+                AI原生智能任务管理器
+            </h1>
+            <h1 class="lang-en text-5xl md:text-7xl font-bold text-dark mb-6 animate-fade-in-up">
+                AI-Native Smart Task Manager
+            </h1>
+
+            <p class="lang-zh text-xl md:text-2xl text-gray-500 mb-12 max-w-3xl mx-auto animate-fade-in-up animate-delay-100">
+                内置 20 年经验的顶级行政助理，精通 GTD 方法论
+            </p>
+            <p class="lang-en text-xl md:text-2xl text-gray-500 mb-12 max-w-3xl mx-auto animate-fade-in-up animate-delay-100">
+                Built-in 20-year experienced executive assistant, proficient in GTD methodology
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up animate-delay-200">
+                <a href="#" class="w-full sm:w-auto px-8 py-4 bg-primary text-white font-medium rounded-full hover:bg-blue-600 transition-all transform hover:scale-105 shadow-lg hover:shadow-xl">
+                    <span class="lang-zh">立即下载</span>
+                    <span class="lang-en">Download Now</span>
+                </a>
+                <a href="#media" class="w-full sm:w-auto px-8 py-4 border-2 border-primary text-primary font-medium rounded-full hover:bg-primary hover:text-white transition-all transform hover:scale-105">
+                    <span class="lang-zh">观看演示视频 ↓</span>
+                    <span class="lang-en">Watch Demo Video ↓</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Media Section -->
+    <section id="media" class="py-16 md:py-24 px-4 bg-gray-50">
+        <div class="max-w-7xl mx-auto space-y-16">
+
+            <!-- Screenshot -->
+            <div class="text-center">
+                <div class="inline-block bg-white rounded-3xl shadow-2xl p-4">
+                    <div class="bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl p-12 min-h-[600px] flex items-center justify-center">
+                        <div class="text-center">
+                            <svg class="w-24 h-24 mx-auto mb-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                            </svg>
+                            <p class="lang-zh text-2xl text-gray-600 font-medium">产品界面截图</p>
+                            <p class="lang-en text-2xl text-gray-600 font-medium">Product Interface Screenshot</p>
+                            <p class="lang-zh text-gray-400 mt-2">主界面 - 任务列表、筛选、智能分析</p>
+                            <p class="lang-en text-gray-400 mt-2">Main Interface - Task list, filtering, smart insights</p>
+                        </div>
+                    </div>
+                </div>
+                <p class="lang-zh mt-6 text-gray-500 text-sm">主界面 - 任务列表、筛选、智能分析</p>
+                <p class="lang-en mt-6 text-gray-500 text-sm">Main Interface - Task list, filtering, smart insights</p>
+            </div>
+
+            <!-- Demo Video -->
+            <div class="text-center">
+                <div class="bg-black rounded-3xl shadow-2xl overflow-hidden max-w-5xl mx-auto">
+                    <div class="aspect-video flex items-center justify-center bg-gradient-to-br from-gray-900 to-gray-800">
+                        <div class="text-center text-white">
+                            <svg class="w-24 h-24 mx-auto mb-4 opacity-80" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z"/>
+                            </svg>
+                            <p class="lang-zh text-xl font-medium opacity-80">演示视频</p>
+                            <p class="lang-en text-xl font-medium opacity-80">Demo Video</p>
+                            <p class="lang-zh text-sm opacity-60 mt-2">智能任务管理器——与你的待办清单对话.mp4</p>
+                            <p class="lang-en text-sm opacity-60 mt-2">The_Smart_Task_Manager.mp4</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Infographic -->
+            <div class="text-center">
+                <div class="inline-block bg-white rounded-3xl shadow-2xl p-8">
+                    <div class="bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl p-12 min-h-[400px] flex items-center justify-center">
+                        <div class="text-center">
+                            <div class="flex justify-center space-x-6 mb-8">
+                                <div class="w-20 h-20 bg-primary rounded-2xl flex items-center justify-center text-white text-3xl">🤖</div>
+                                <div class="w-20 h-20 bg-secondary rounded-2xl flex items-center justify-center text-white text-3xl">⌨️</div>
+                                <div class="w-20 h-20 bg-green-500 rounded-2xl flex items-center justify-center text-white text-3xl">📊</div>
+                            </div>
+                            <p class="lang-zh text-xl text-gray-700 font-semibold">5 大核心功能</p>
+                            <p class="lang-en text-xl text-gray-700 font-semibold">5 Core Features</p>
+                        </div>
+                    </div>
+                </div>
+                <p class="lang-zh mt-6 text-gray-500 text-sm">核心功能信息图</p>
+                <p class="lang-en mt-6 text-gray-500 text-sm">Core Features Infographic</p>
+            </div>
+
+            <!-- Audio Podcast -->
+            <div class="text-center">
+                <div class="audio-player rounded-3xl shadow-xl p-8 max-w-3xl mx-auto">
+                    <div class="flex items-center space-x-6">
+                        <div class="w-24 h-24 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center flex-shrink-0">
+                            <svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 3v9.28a4.39 4.39 0 00-1.5-.28C8.01 12 6 14.01 6 16.5S8.01 21 10.5 21c2.31 0 4.2-1.75 4.45-4H15V6h4V3h-7z"/>
+                            </svg>
+                        </div>
+                        <div class="flex-1 text-left">
+                            <p class="lang-zh text-lg font-semibold text-dark mb-1">产品介绍播客</p>
+                            <p class="lang-en text-lg font-semibold text-dark mb-1">Product Introduction Podcast</p>
+                            <p class="lang-zh text-sm text-gray-500">智能任务管理器中文介绍播客.m4a</p>
+                            <p class="lang-en text-sm text-gray-500">A_Non-Coder_Built_Smart_Task_Manager.m4a</p>
+                            <div class="mt-4 flex items-center space-x-4">
+                                <button class="p-3 bg-primary text-white rounded-full hover:bg-blue-600 transition-colors">
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M8 5v14l11-7z"/>
+                                    </svg>
+                                </button>
+                                <div class="flex-1 bg-white rounded-full h-2">
+                                    <div class="bg-primary h-2 rounded-full w-1/3"></div>
+                                </div>
+                                <span class="text-sm text-gray-500">12:34</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-16 md:py-24 px-4">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="lang-zh text-4xl md:text-5xl font-bold text-center text-dark mb-16">
+                核心功能
+            </h2>
+            <h2 class="lang-en text-4xl md:text-5xl font-bold text-center text-dark mb-16">
+                Core Features
+            </h2>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="bg-white border border-gray-200 rounded-3xl p-8 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-6 text-3xl">🤖</div>
+                    <h3 class="lang-zh text-xl font-bold text-dark mb-3">说人话，不是填表单</h3>
+                    <h3 class="lang-en text-xl font-bold text-dark mb-3">Speak Human, Not Forms</h3>
+                    <p class="lang-zh text-gray-600">"明天下午3点开会"直接输入，AI 自动提取时间、地点、优先级，2 秒创建任务。</p>
+                    <p class="lang-en text-gray-600">"Meeting at 3 PM tomorrow" works, AI auto-extracts time, location, priority in 2 seconds.</p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="bg-white border border-gray-200 rounded-3xl p-8 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <div class="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mb-6 text-3xl">⌨️</div>
+                    <h3 class="lang-zh text-xl font-bold text-dark mb-3">双快捷键系统</h3>
+                    <h3 class="lang-en text-xl font-bold text-dark mb-3">Dual Shortcut System</h3>
+                    <p class="lang-zh text-gray-600">普通模式可编辑，静默模式后台创建。在任何应用中复制 + 快捷键，任务记录完成。</p>
+                    <p class="lang-en text-gray-600">Normal mode editable, silent mode background. Copy + shortcut in any app, task recorded.</p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="bg-white border border-gray-200 rounded-3xl p-8 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <div class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mb-6 text-3xl">📊</div>
+                    <h3 class="lang-zh text-xl font-bold text-dark mb-3">主动提醒，未雨绸缪</h3>
+                    <h3 class="lang-en text-xl font-bold text-dark mb-3">Proactive Insights</h3>
+                    <p class="lang-zh text-gray-600">自动识别过期任务、工作负载、资源冲突，提供个性化建议。出差任务含天气提醒。</p>
+                    <p class="lang-en text-gray-600">Auto-identifies overdue tasks, workload, conflicts, provides personalized suggestions with weather.</p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="bg-white border border-gray-200 rounded-3xl p-8 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 md:col-span-1 md:col-start-1">
+                    <div class="w-16 h-16 bg-orange-100 rounded-2xl flex items-center justify-center mb-6 text-3xl">📝</div>
+                    <h3 class="lang-zh text-xl font-bold text-dark mb-3">面向"管理者或未来的自己"</h3>
+                    <h3 class="lang-en text-xl font-bold text-dark mb-3">For "Managers or Future Self"</h3>
+                    <p class="lang-zh text-gray-600">资深工作复盘助理自动生成日报/周报/月报，提炼成果与洞察，大幅节省复盘时间。</p>
+                    <p class="lang-en text-gray-600">Senior work assistant auto-generates daily/weekly/monthly reports, extracts insights efficiently.</p>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="bg-white border border-gray-200 rounded-3xl p-8 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 md:col-span-1 md:col-start-2">
+                    <div class="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mb-6 text-3xl">🔒</div>
+                    <h3 class="lang-zh text-xl font-bold text-dark mb-3">本地存储 + 自动备份</h3>
+                    <h3 class="lang-en text-xl font-bold text-dark mb-3">Local Storage + Auto Backup</h3>
+                    <p class="lang-zh text-gray-600">所有数据保存在本地，每 10 分钟自动备份，支持 Obsidian 双向同步。</p>
+                    <p class="lang-en text-gray-600">All data stored locally, auto-backup every 10 minutes, supports Obsidian bidirectional sync.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases Section -->
+    <section id="use-cases" class="py-16 md:py-24 px-4 bg-gray-50">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="lang-zh text-4xl md:text-5xl font-bold text-center text-dark mb-16">
+                适合谁使用？
+            </h2>
+            <h2 class="lang-en text-4xl md:text-5xl font-bold text-center text-dark mb-16">
+                Who Is This For?
+            </h2>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Use Case 1 -->
+                <div class="bg-white border border-gray-200 rounded-3xl p-8">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <span class="text-4xl">💻</span>
+                        <div>
+                            <span class="inline-block px-3 py-1 bg-primary text-white text-xs font-medium rounded-full mb-2">核心用户 40%</span>
+                            <h3 class="lang-zh text-xl font-bold text-dark">知识工作者</h3>
+                            <h3 class="lang-en text-xl font-bold text-dark">Knowledge Workers</h3>
+                        </div>
+                    </div>
+                    <div class="space-y-4 text-gray-600">
+                        <p class="lang-zh text-sm font-medium text-gray-500">程序员、产品经理、设计师、研究人员</p>
+                        <p class="lang-en text-sm font-medium text-gray-500">Programmers, PMs, designers, researchers</p>
+                        <div>
+                            <p class="lang-zh text-sm font-semibold text-dark mb-1">痛点：</p>
+                            <p class="lang-en text-sm font-semibold text-dark mb-1">Pain Points:</p>
+                            <p class="lang-zh text-sm">任务来源多样，容易遗漏；传统应用操作繁琐，打断工作流；需要生成工作总结</p>
+                            <p class="lang-en text-sm">Diverse task sources, easy to miss; cumbersome apps interrupt workflow; need work summaries</p>
+                        </div>
+                        <div>
+                            <p class="lang-zh text-sm font-semibold text-dark mb-1">解决方案：</p>
+                            <p class="lang-en text-sm font-semibold text-dark mb-1">Solution:</p>
+                            <p class="lang-zh text-sm">秒速记录，不中断思考；AI 自动生成周报/月报；本地存储，保护隐私</p>
+                            <p class="lang-en text-sm">Instant recording, maintain focus; AI auto-generates reports; local storage, privacy first</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Use Case 2 -->
+                <div class="bg-white border border-gray-200 rounded-3xl p-8">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <span class="text-4xl">🎨</span>
+                        <div>
+                            <span class="inline-block px-3 py-1 bg-secondary text-white text-xs font-medium rounded-full mb-2">重要用户 30%</span>
+                            <h3 class="lang-zh text-xl font-bold text-dark">自由职业者</h3>
+                            <h3 class="lang-en text-xl font-bold text-dark">Freelancers</h3>
+                        </div>
+                    </div>
+                    <div class="space-y-4 text-gray-600">
+                        <p class="lang-zh text-sm font-medium text-gray-500">独立开发者、设计师、撰稿人</p>
+                        <p class="lang-en text-sm font-medium text-gray-500">Independent developers, designers, writers</p>
+                        <div>
+                            <p class="lang-zh text-sm font-semibold text-dark mb-1">痛点：</p>
+                            <p class="lang-en text-sm font-semibold text-dark mb-1">Pain Points:</p>
+                            <p class="lang-zh text-sm">多个客户项目容易混乱；需要精确记录时间用于计费；缺乏团队协作</p>
+                            <p class="lang-en text-sm">Multiple client projects get chaotic; need precise time tracking for billing; lack team collaboration</p>
+                        </div>
+                        <div>
+                            <p class="lang-zh text-sm font-semibold text-dark mb-1">解决方案：</p>
+                            <p class="lang-en text-sm font-semibold text-dark mb-1">Solution:</p>
+                            <p class="lang-zh text-sm">按客户/项目分类管理；任务计时功能；工作总结展示专业能力</p>
+                            <p class="lang-en text-sm">Manage by client/project; task timing; work summary demonstrates professionalism</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Use Case 3 -->
+                <div class="bg-white border border-gray-200 rounded-3xl p-8">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <span class="text-4xl">📚</span>
+                        <div>
+                            <span class="inline-block px-3 py-1 bg-green-500 text-white text-xs font-medium rounded-full mb-2">成长用户 20%</span>
+                            <h3 class="lang-zh text-xl font-bold text-dark">学生群体</h3>
+                            <h3 class="lang-en text-xl font-bold text-dark">Students</h3>
+                        </div>
+                    </div>
+                    <div class="space-y-4 text-gray-600">
+                        <p class="lang-zh text-sm font-medium text-gray-500">大学生、研究生、博士生</p>
+                        <p class="lang-en text-sm font-medium text-gray-500">College, graduate, PhD students</p>
+                        <div>
+                            <p class="lang-zh text-sm font-semibold text-dark mb-1">痛点：</p>
+                            <p class="lang-en text-sm font-semibold text-dark mb-1">Pain Points:</p>
+                            <p class="lang-zh text-sm">课程、考试容易遗漏；缺乏时间管理经验；需要记录学习成果</p>
+                            <p class="lang-en text-sm">Courses, exams easily overlooked; lack time management experience; need to track learning</p>
+                        </div>
+                        <div>
+                            <p class="lang-zh text-sm font-semibold text-dark mb-1">解决方案：</p>
+                            <p class="lang-en text-sm font-semibold text-dark mb-1">Solution:</p>
+                            <p class="lang-zh text-sm">简单易用，学习成本低；提醒功能不错过截止日期；学习总结和知识沉淀</p>
+                            <p class="lang-en text-sm">Easy to use, low learning curve; reminders never miss deadlines; learning summaries</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Use Case 4 -->
+                <div class="bg-white border border-gray-200 rounded-3xl p-8">
+                    <div class="flex items-center space-x-3 mb-6">
+                        <span class="text-4xl">⚡</span>
+                        <div>
+                            <span class="inline-block px-3 py-1 bg-orange-500 text-white text-xs font-medium rounded-full mb-2">潜在用户 10%</span>
+                            <h3 class="lang-zh text-xl font-bold text-dark">效率爱好者</h3>
+                            <h3 class="lang-en text-xl font-bold text-dark">Productivity Enthusiasts</h3>
+                        </div>
+                    </div>
+                    <div class="space-y-4 text-gray-600">
+                        <p class="lang-zh text-sm font-medium text-gray-500">追求生产力，喜欢尝试新工具</p>
+                        <p class="lang-en text-sm font-medium text-gray-500">Pursue productivity, love trying new tools</p>
+                        <div>
+                            <p class="lang-zh text-sm font-semibold text-dark mb-1">痛点：</p>
+                            <p class="lang-en text-sm font-semibold text-dark mb-1">Pain Points:</p>
+                            <p class="lang-zh text-sm">尝试过很多工具，各有优劣；寻找更智能的解决方案</p>
+                            <p class="lang-en text-sm">Tried many tools with pros/cons; seeking smarter solutions</p>
+                        </div>
+                        <div>
+                            <p class="lang-zh text-sm font-semibold text-dark mb-1">解决方案：</p>
+                            <p class="lang-en text-sm font-semibold text-dark mb-1">Solution:</p>
+                            <p class="lang-zh text-sm">AI 创新，智能建议；可定制化快捷键；高性能，数据可导出</p>
+                            <p class="lang-en text-sm">AI innovation, smart suggestions; customizable shortcuts; high performance, exportable data</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparison Section -->
+    <section id="comparison" class="py-16 md:py-24 px-4">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="lang-zh text-4xl md:text-5xl font-bold text-center text-dark mb-6">
+                为什么选择 AI原生智能任务管理器？
+            </h2>
+            <h2 class="lang-en text-4xl md:text-5xl font-bold text-center text-dark mb-6">
+                Why Choose AI-Native Smart Task Manager?
+            </h2>
+
+            <!-- Comparison Table -->
+            <div class="overflow-x-auto mb-16">
+                <table class="w-full bg-white rounded-3xl overflow-hidden shadow-lg">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="lang-zh px-6 py-4 text-left text-sm font-bold text-dark">功能</th>
+                            <th class="lang-en px-6 py-4 text-left text-sm font-bold text-dark">Feature</th>
+                            <th class="lang-zh px-6 py-4 text-center text-sm font-bold text-primary">AI原生智能任务管理器</th>
+                            <th class="lang-en px-6 py-4 text-center text-sm font-bold text-primary">AI-Native Manager</th>
+                            <th class="lang-zh px-6 py-4 text-center text-sm font-bold text-gray-600">传统待办应用</th>
+                            <th class="lang-en px-6 py-4 text-center text-sm font-bold text-gray-600">Traditional Apps</th>
+                            <th class="lang-zh px-6 py-4 text-center text-sm font-bold text-gray-600">其他 AI 应用</th>
+                            <th class="lang-en px-6 py-4 text-center text-sm font-bold text-gray-600">Other AI Apps</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        <tr>
+                            <td class="lang-zh px-6 py-4 text-sm font-medium text-dark">AI 解析</td>
+                            <td class="lang-en px-6 py-4 text-sm font-medium text-dark">AI Parsing</td>
+                            <td class="px-6 py-4 text-center text-2xl text-green-500">✅</td>
+                            <td class="px-6 py-4 text-center text-2xl text-gray-400">❌</td>
+                            <td class="px-6 py-4 text-center text-2xl text-orange-500">⚠️</td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="lang-zh px-6 py-4 text-sm font-medium text-dark">快捷键</td>
+                            <td class="lang-en px-6 py-4 text-sm font-medium text-dark">Shortcuts</td>
+                            <td class="px-6 py-4 text-center text-2xl text-green-500">✅</td>
+                            <td class="px-6 py-4 text-center text-2xl text-orange-500">⚠️</td>
+                            <td class="px-6 py-4 text-center text-2xl text-gray-400">❌</td>
+                        </tr>
+                        <tr>
+                            <td class="lang-zh px-6 py-4 text-sm font-medium text-dark">工作总结</td>
+                            <td class="lang-en px-6 py-4 text-sm font-medium text-dark">Work Summary</td>
+                            <td class="px-6 py-4 text-center text-2xl text-green-500">✅</td>
+                            <td class="px-6 py-4 text-center text-2xl text-gray-400">❌</td>
+                            <td class="px-6 py-4 text-center text-2xl text-gray-400">❌</td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="lang-zh px-6 py-4 text-sm font-medium text-dark">智能洞察</td>
+                            <td class="lang-en px-6 py-4 text-sm font-medium text-dark">Smart Insights</td>
+                            <td class="px-6 py-4 text-center text-2xl text-green-500">✅</td>
+                            <td class="px-6 py-4 text-center text-2xl text-gray-400">❌</td>
+                            <td class="px-6 py-4 text-center text-2xl text-orange-500">⚠️</td>
+                        </tr>
+                        <tr>
+                            <td class="lang-zh px-6 py-4 text-sm font-medium text-dark">数据安全</td>
+                            <td class="lang-en px-6 py-4 text-sm font-medium text-dark">Data Security</td>
+                            <td class="px-6 py-4 text-center text-2xl text-green-500">✅</td>
+                            <td class="px-6 py-4 text-center text-2xl text-orange-500">⚠️</td>
+                            <td class="px-6 py-4 text-center text-2xl text-orange-500">⚠️</td>
+                        </tr>
+                        <tr class="bg-gray-50">
+                            <td class="lang-zh px-6 py-4 text-sm font-medium text-dark">集成能力</td>
+                            <td class="lang-en px-6 py-4 text-sm font-medium text-dark">Integration</td>
+                            <td class="px-6 py-4 text-center text-2xl text-green-500">✅</td>
+                            <td class="px-6 py-4 text-center text-2xl text-gray-400">❌</td>
+                            <td class="px-6 py-4 text-center text-2xl text-gray-400">❌</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Key Advantages -->
+            <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <div class="text-center">
+                    <div class="text-5xl mb-4">🎯</div>
+                    <h3 class="lang-zh text-xl font-bold text-dark mb-2">真正的 AI-Native</h3>
+                    <h3 class="lang-en text-xl font-bold text-dark mb-2">Truly AI-Native</h3>
+                    <p class="lang-zh text-gray-600 text-sm">不是简单的 AI 功能叠加，而是从底层设计的 AI 智能体</p>
+                    <p class="lang-en text-gray-600 text-sm">Not just AI features added on, but AI-first from the ground up</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-5xl mb-4">⌨️</div>
+                    <h3 class="lang-zh text-xl font-bold text-dark mb-2">秒级响应</h3>
+                    <h3 class="lang-en text-xl font-bold text-dark mb-2">Instant Response</h3>
+                    <p class="lang-zh text-gray-600 text-sm">双快捷键系统，2 秒完成记录，不打断工作流</p>
+                    <p class="lang-en text-gray-600 text-sm">Dual shortcuts, 2-second recording, never interrupt workflow</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-5xl mb-4">📊</div>
+                    <h3 class="lang-zh text-xl font-bold text-dark mb-2">面向管理者</h3>
+                    <h3 class="lang-en text-xl font-bold text-dark mb-2">Manager-Facing</h3>
+                    <p class="lang-zh text-gray-600 text-sm">一键生成工作总结，让成果清晰可见</p>
+                    <p class="lang-en text-gray-600 text-sm">One-click work summary, make achievements clearly visible</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-gray-400 py-16 px-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-4 gap-8 mb-12">
+                <!-- Brand -->
+                <div class="md:col-span-1">
+                    <h3 class="lang-zh text-xl font-bold text-white mb-2">AI原生智能任务管理器</h3>
+                    <h3 class="lang-en text-xl font-bold text-white mb-2">AI-Native Smart Task Manager</h3>
+                    <p class="lang-zh text-sm">让 AI 为你每月节省 20+ 小时</p>
+                    <p class="lang-en text-sm">Let AI save you 20+ hours monthly</p>
+                </div>
+
+                <!-- Product -->
+                <div>
+                    <h4 class="lang-zh text-white font-semibold mb-4">产品</h4>
+                    <h4 class="lang-en text-white font-semibold mb-4">Product</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="hover:text-white transition-colors">下载 / Download</a></li>
+                        <li><a href="#features" class="hover:text-white transition-colors">功能介绍 / Features</a></li>
+                        <li><a href="#use-cases" class="hover:text-white transition-colors">使用场景 / Use Cases</a></li>
+                    </ul>
+                </div>
+
+                <!-- Support -->
+                <div>
+                    <h4 class="lang-zh text-white font-semibold mb-4">支持</h4>
+                    <h4 class="lang-en text-white font-semibold mb-4">Support</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="hover:text-white transition-colors">快速入门 / Quick Start</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">用户手册 / User Manual</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">常见问题 / FAQ</a></li>
+                    </ul>
+                </div>
+
+                <!-- About -->
+                <div>
+                    <h4 class="lang-zh text-white font-semibold mb-4">关于</h4>
+                    <h4 class="lang-en text-white font-semibold mb-4">About</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="hover:text-white transition-colors">开发故事 / Dev Story</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">联系我们 / Contact</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">GitHub</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-sm">© 2026 AI-Native Smart Task Manager</p>
+                <div class="flex space-x-6 mt-4 md:mt-0">
+                    <a href="#" class="hover:text-white transition-colors">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                    </a>
+                    <a href="mailto:your-email@example.com" class="hover:text-white transition-colors text-sm">
+                        your-email@example.com
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize language from localStorage or default to 'zh'
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedLang = localStorage.getItem('lang') || 'zh';
+            document.documentElement.lang = savedLang;
+        });
+    </script>
+</body>
+</html>
