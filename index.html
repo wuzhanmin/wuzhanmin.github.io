@@ -228,18 +228,26 @@
                     <span class="hidden" data-lang="en">Feature Comparison Infographic</span>
                 </h2>
                 <div class="relative">
-                    <img src="assets/images/infographic-zh.png"
-                         alt="AI原生智能任务管理器与传统任务管理工具的核心功能对比信息图，展示智能任务分析、自动分类、GTD方法论支持等特性"
-                         data-lang="zh"
-                         class="mx-auto rounded-xl shadow-lg max-w-4xl w-full"
-                         loading="lazy"
-                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
-                    <img src="assets/images/infographic-en.png"
-                         alt="AI-Native Smart Task Manager feature comparison infographic with traditional tools, showing intelligent task analysis, auto-categorization, and GTD methodology support"
-                         data-lang="en"
-                         class="hidden mx-auto rounded-xl shadow-lg max-w-4xl w-full"
-                         loading="lazy"
-                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <!-- Chinese Infographic -->
+                    <picture data-lang="zh">
+                        <source srcset="assets/images/infographic-zh.webp" type="image/webp">
+                        <img src="assets/images/infographic-zh.png"
+                             alt="AI原生智能任务管理器与传统任务管理工具的核心功能对比信息图，展示智能任务分析、自动分类、GTD方法论支持等特性"
+                             class="mx-auto rounded-xl shadow-lg max-w-4xl w-full"
+                             loading="lazy"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    </picture>
+
+                    <!-- English Infographic -->
+                    <picture class="hidden" data-lang="en">
+                        <source srcset="assets/images/infographic-en.webp" type="image/webp">
+                        <img src="assets/images/infographic-en.png"
+                             alt="AI-Native Smart Task Manager feature comparison infographic with traditional tools, showing intelligent task analysis, auto-categorization, and GTD methodology support"
+                             class="mx-auto rounded-xl shadow-lg max-w-4xl w-full"
+                             loading="lazy"
+                             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    </picture>
+
                     <div class="hidden text-center py-20 bg-white rounded-2xl border border-gray-border flex-col items-center justify-center">
                         <svg class="w-16 h-16 text-gray-medium mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
