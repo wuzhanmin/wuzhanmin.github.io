@@ -8,12 +8,14 @@
 
     // Get media elements
     const demoVideo = document.getElementById('demoVideo');
+    const demoVideoBili = document.getElementById('demoVideoBili');
     const videoSourceZh = document.getElementById('videoSourceZh');
     const videoSourceEn = document.getElementById('videoSourceEn');
     const podcastAudio = document.getElementById('podcastAudio');
     const audioSourceZh = document.getElementById('audioSourceZh');
     const audioSourceEn = document.getElementById('audioSourceEn');
     const introductionVideo = document.getElementById('introductionVideo');
+    const introVideoBili = document.getElementById('introVideoBili');
     const introVideoSourceZh = document.getElementById('introVideoSourceZh');
     const introVideoSourceEn = document.getElementById('introVideoSourceEn');
 
@@ -35,25 +37,40 @@
             }
         });
 
-        // Update video source based on language
-        if (demoVideo && videoSourceZh && videoSourceEn) {
-            const currentTime = demoVideo.currentTime;
-            const wasPlaying = !demoVideo.paused;
-
-            if (currentLang === 'zh') {
-                videoSourceZh.src = 'assets/videos/demo-zh.mp4';
-                videoSourceEn.src = '';
-            } else {
-                videoSourceZh.src = '';
-                videoSourceEn.src = 'assets/videos/demo-en.mp4';
+        // Toggle between Bilibili player (Chinese) and local video (English)
+        if (currentLang === 'zh') {
+            // Show Bilibili players
+            if (demoVideoBili) demoVideoBili.classList.remove('hidden');
+            if (introVideoBili) introVideoBili.classList.remove('hidden');
+            // Hide and pause local videos
+            if (demoVideo) {
+                demoVideo.classList.add('hidden');
+                demoVideo.pause();
             }
+            if (introductionVideo) {
+                introductionVideo.classList.add('hidden');
+                introductionVideo.pause();
+            }
+        } else {
+            // Hide Bilibili players
+            if (demoVideoBili) demoVideoBili.classList.add('hidden');
+            if (introVideoBili) introVideoBili.classList.add('hidden');
+            // Show local videos
+            if (demoVideo) demoVideo.classList.remove('hidden');
+            if (introductionVideo) introductionVideo.classList.remove('hidden');
+        }
 
+        // Update video source for English only
+        if (currentLang === 'en' && demoVideo && videoSourceEn) {
+            videoSourceZh.src = '';
+            videoSourceEn.src = 'assets/videos/demo-en.mp4';
             demoVideo.load();
-            demoVideo.currentTime = currentTime;
+        }
 
-            if (wasPlaying) {
-                demoVideo.play().catch(err => console.log('Auto-play prevented:', err));
-            }
+        if (currentLang === 'en' && introductionVideo && introVideoSourceEn) {
+            introVideoSourceZh.src = '';
+            introVideoSourceEn.src = 'assets/videos/introduction-en.mp4';
+            introductionVideo.load();
         }
 
         // Update audio source based on language
@@ -75,41 +92,6 @@
             if (wasPlaying) {
                 podcastAudio.play().catch(err => console.log('Auto-play prevented:', err));
             }
-        }
-
-        // Update introduction video source based on language
-        if (introductionVideo && introVideoSourceZh && introVideoSourceEn) {
-            const currentTime = introductionVideo.currentTime;
-            const wasPlaying = !introductionVideo.paused;
-
-            if (currentLang === 'zh') {
-                introVideoSourceZh.src = 'assets/videos/introduction-zh.mp4';
-                introVideoSourceEn.src = '';
-            } else {
-                introVideoSourceZh.src = '';
-                introVideoSourceEn.src = 'assets/videos/introduction-en.mp4';
-            }
-
-            introductionVideo.load();
-            introductionVideo.currentTime = currentTime;
-
-            if (wasPlaying) {
-                introductionVideo.play().catch(err => console.log('Auto-play prevented:', err));
-            }
-        }
-
-        // Update demoVideo poster attribute
-        if (demoVideo) {
-            demoVideo.poster = currentLang === 'zh'
-                ? 'assets/images/demo-poster-zh.jpg'
-                : 'assets/images/demo-poster-en.jpg';
-        }
-
-        // Update introductionVideo poster attribute
-        if (introductionVideo) {
-            introductionVideo.poster = currentLang === 'zh'
-                ? 'assets/images/introduction-poster-zh.jpg'
-                : 'assets/images/introduction-poster-en.jpg';
         }
 
         // Update download links based on language
@@ -147,28 +129,17 @@
         }
     });
 
-    // Initialize video and audio sources
-    if (videoSourceZh && videoSourceEn) {
-        videoSourceZh.src = 'assets/videos/demo-zh.mp4';
-        videoSourceEn.src = '';
-    }
+    // Initialize audio sources (audio still uses local files)
     if (audioSourceZh && audioSourceEn) {
         audioSourceZh.src = 'assets/audio/podcast-zh.m4a';
         audioSourceEn.src = '';
     }
-    if (introVideoSourceZh && introVideoSourceEn) {
-        introVideoSourceZh.src = 'assets/videos/introduction-zh.mp4';
-        introVideoSourceEn.src = '';
-    }
 
-    // Initialize video posters with Chinese version
-    if (demoVideo) {
-        demoVideo.poster = 'assets/images/demo-poster-zh.jpg';
-    }
-
-    if (introductionVideo) {
-        introductionVideo.poster = 'assets/images/introduction-poster-zh.jpg';
-    }
+    // Initialize video: show Bilibili players (Chinese), hide local videos (English)
+    if (demoVideoBili) demoVideoBili.classList.remove('hidden');
+    if (introVideoBili) introVideoBili.classList.remove('hidden');
+    if (demoVideo) demoVideo.classList.add('hidden');
+    if (introductionVideo) introductionVideo.classList.add('hidden');
 })();
 
 // Scroll animations using Intersection Observer

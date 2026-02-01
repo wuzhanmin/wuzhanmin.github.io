@@ -43,6 +43,24 @@
         html {
             scroll-behavior: smooth;
         }
+
+        /* Bilibili Player Styles */
+        .bili-player {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            overflow: hidden;
+            background: #000;
+        }
+
+        .bili-player iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
     </style>
 </head>
 <body>
@@ -175,11 +193,27 @@
                     <span class="hidden" data-lang="en">Demo Video</span>
                 </h2>
                 <div class="max-w-5xl mx-auto">
+                    <!-- Bilibili Player (Chinese) -->
+                    <div id="demoVideoBili" class="bili-player rounded-xl shadow-lg" data-lang="zh">
+                        <iframe src="https://player.bilibili.com/player.html?bvid=BV1Bm6bB5Eb7&page=1&high_quality=1&danmaku=0&autoplay=0"
+                                width="100%"
+                                height="100%"
+                                scrolling="no"
+                                border="0"
+                                frameborder="no"
+                                framespacing="0"
+                                allowfullscreen="true"
+                                sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts">
+                        </iframe>
+                    </div>
+
+                    <!-- Local Video (English) -->
                     <video id="demoVideo"
                            controls
                            preload="metadata"
-                           poster="assets/images/demo-poster-zh.jpg"
-                           class="w-full rounded-xl shadow-lg">
+                           poster="assets/images/demo-poster-en.jpg"
+                           class="w-full rounded-xl shadow-lg hidden"
+                           data-lang="en">
                         <source id="videoSourceZh" src="assets/videos/demo-zh.mp4" type="video/mp4">
                         <source id="videoSourceEn" src="assets/videos/demo-en.mp4" type="video/mp4">
                         Your browser does not support the video tag.
@@ -244,11 +278,28 @@
                         <span data-lang="zh">快速了解 AI原生智能任务管理器的核心功能与使用技巧</span>
                         <span class="hidden" data-lang="en">Quick overview of core features and usage tips of AI-Native Smart Task Manager</span>
                     </p>
+
+                    <!-- Bilibili Player (Chinese) -->
+                    <div id="introVideoBili" class="bili-player rounded-xl shadow-lg" data-lang="zh">
+                        <iframe src="https://player.bilibili.com/player.html?bvid=BV1Fy6bB7E7C&page=1&high_quality=1&danmaku=0&autoplay=0"
+                                width="100%"
+                                height="100%"
+                                scrolling="no"
+                                border="0"
+                                frameborder="no"
+                                framespacing="0"
+                                allowfullscreen="true"
+                                sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts">
+                        </iframe>
+                    </div>
+
+                    <!-- Local Video (English) -->
                     <video id="introductionVideo"
                            controls
                            preload="metadata"
-                           poster="assets/images/introduction-poster-zh.jpg"
-                           class="w-full rounded-xl shadow-lg">
+                           poster="assets/images/introduction-poster-en.jpg"
+                           class="w-full rounded-xl shadow-lg hidden"
+                           data-lang="en">
                         <source id="introVideoSourceZh" src="assets/videos/introduction-zh.mp4" type="video/mp4">
                         <source id="introVideoSourceEn" src="assets/videos/introduction-en.mp4" type="video/mp4">
                         您的浏览器不支持视频标签。
