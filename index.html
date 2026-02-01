@@ -154,7 +154,7 @@
             <!-- Product Screenshot -->
             <div class="text-center">
                 <img src="assets/images/screenshot.png"
-                     alt="Product Screenshot"
+                     alt="AI原生智能任务管理器主界面截图，展示任务列表、智能筛选和数据分析功能"
                      class="mx-auto rounded-2xl shadow-lg max-w-5xl w-full"
                      loading="lazy"
                      onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
@@ -173,9 +173,9 @@
                     <span class="hidden" data-lang="en">Demo Video</span>
                 </h2>
                 <div class="max-w-5xl mx-auto">
-                    <video controls preload="metadata" class="w-full rounded-xl shadow-lg">
-                        <source src="assets/videos/demo-zh.mp4" type="video/mp4" data-lang="zh">
-                        <source src="assets/videos/demo-en.mp4" type="video/mp4" data-lang="en">
+                    <video id="demoVideo" controls preload="metadata" class="w-full rounded-xl shadow-lg">
+                        <source id="videoSourceZh" src="assets/videos/demo-zh.mp4" type="video/mp4">
+                        <source id="videoSourceEn" src="assets/videos/demo-en.mp4" type="video/mp4">
                         Your browser does not support the video tag.
                     </video>
                 </div>
@@ -183,32 +183,47 @@
 
             <!-- Infographic -->
             <div class="text-center">
-                <img src="assets/images/infographic-zh.png"
-                     alt="Infographic"
-                     data-lang="zh"
-                     class="mx-auto rounded-xl shadow-lg max-w-4xl w-full"
-                     loading="lazy"
-                     onerror="this.style.display='none'">
-                <img src="assets/images/infographic-en.png"
-                     alt="Infographic"
-                     data-lang="en"
-                     class="hidden mx-auto rounded-xl shadow-lg max-w-4xl w-full"
-                     loading="lazy"
-                     onerror="this.style.display='none'">
+                <h2 class="text-2xl font-bold text-gray-dark mb-8">
+                    <span data-lang="zh">功能对比信息图</span>
+                    <span class="hidden" data-lang="en">Feature Comparison Infographic</span>
+                </h2>
+                <div class="relative">
+                    <img src="assets/images/infographic-zh.png"
+                         alt="AI原生智能任务管理器与传统任务管理工具的核心功能对比信息图，展示智能任务分析、自动分类、GTD方法论支持等特性"
+                         data-lang="zh"
+                         class="mx-auto rounded-xl shadow-lg max-w-4xl w-full"
+                         loading="lazy"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <img src="assets/images/infographic-en.png"
+                         alt="AI-Native Smart Task Manager feature comparison infographic with traditional tools, showing intelligent task analysis, auto-categorization, and GTD methodology support"
+                         data-lang="en"
+                         class="hidden mx-auto rounded-xl shadow-lg max-w-4xl w-full"
+                         loading="lazy"
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="hidden text-center py-20 bg-white rounded-2xl border border-gray-border flex-col items-center justify-center">
+                        <svg class="w-16 h-16 text-gray-medium mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        <p class="text-gray-medium" data-lang="zh">功能对比信息图待添加</p>
+                        <p class="hidden text-gray-medium" data-lang="en">Feature comparison infographic coming soon</p>
+                    </div>
+                </div>
             </div>
 
             <!-- Audio Podcast -->
             <div class="max-w-3xl mx-auto">
-                <div class="bg-white rounded-2xl p-8 shadow-md">
+                <div class="bg-white rounded-2xl p-8 shadow-md border-2 border-gray-border">
                     <h3 class="text-xl font-bold text-gray-dark mb-4">
                         <span data-lang="zh">产品介绍播客</span>
                         <span class="hidden" data-lang="en">Product Introduction Podcast</span>
                     </h3>
-                    <audio controls class="w-full">
-                        <source src="assets/audio/podcast-zh.m4a" type="audio/mp4" data-lang="zh">
-                        <source src="assets/audio/podcast-en.m4a" type="audio/mp4" data-lang="en">
+                    <audio id="podcastAudio" controls class="w-full">
+                        <source id="audioSourceZh" src="assets/audio/podcast-zh.m4a" type="audio/mp4">
+                        <source id="audioSourceEn" src="assets/audio/podcast-en.m4a" type="audio/mp4">
                         Your browser does not support the audio element.
                     </audio>
+                    <p class="mt-4 text-gray-medium text-sm" data-lang="zh">深入了解产品理念、核心功能和使用技巧</p>
+                    <p class="hidden mt-4 text-gray-medium text-sm" data-lang="en">Deep dive into product philosophy, core features, and usage tips</p>
                 </div>
             </div>
         </div>
