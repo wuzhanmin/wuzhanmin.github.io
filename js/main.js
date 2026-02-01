@@ -79,7 +79,7 @@
             const wasPlaying = !podcastAudio.paused;
 
             if (currentLang === 'zh') {
-                audioSourceZh.src = 'assets/audio/podcast-zh.m4a';
+                audioSourceZh.src = 'assets/audio/podcast-zh.mp3';
                 audioSourceEn.src = '';
             } else {
                 audioSourceZh.src = '';
@@ -131,7 +131,7 @@
 
     // Initialize audio sources (audio still uses local files)
     if (audioSourceZh && audioSourceEn) {
-        audioSourceZh.src = 'assets/audio/podcast-zh.m4a';
+        audioSourceZh.src = 'assets/audio/podcast-zh.mp3';
         audioSourceEn.src = '';
     }
 
