@@ -1,2 +1,6 @@
 # Git worktrees
 .worktrees/
+
+# macOS system files
+.DS_Store
+*/.DS_Store
