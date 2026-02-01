@@ -97,6 +97,22 @@
                 introductionVideo.play().catch(err => console.log('Auto-play prevented:', err));
             }
         }
+
+        // Update download links based on language
+        const downloadCta = document.getElementById('downloadCta');
+        const footerDownload = document.getElementById('footerDownload');
+
+        if (downloadCta) {
+            downloadCta.href = currentLang === 'zh'
+                ? 'assets/pdf/product-manual-zh.pdf'
+                : 'assets/pdf/product-manual-en.pdf';
+        }
+
+        if (footerDownload) {
+            footerDownload.href = currentLang === 'zh'
+                ? 'assets/pdf/product-manual-zh.pdf'
+                : 'assets/pdf/product-manual-en.pdf';
+        }
     }
 
     // Attach event listeners to both buttons
